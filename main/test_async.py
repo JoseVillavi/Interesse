@@ -21,6 +21,7 @@ async def run():
         usuario = data["Username"]
         contrasena = data["Password"]
 
+        # Login function
         await page.click("#ap_email_login")
         await page.fill('#ap_email_login', usuario)
         await page.click('#continue')
@@ -30,38 +31,38 @@ async def run():
 
         await page.screenshot(path="screen.jpg")
         
-        # # Click on TODO navbar
-        # await page.click("#nav-hamburger-menu")
-        # # Go to Electronicos
-        # await page.get_by_role("button", name="Electrónicos").click()
-        # # Go to Television y video
+        # Click on TODO navbar
+        await page.click("#nav-hamburger-menu")
+        # Go to Electronicos
+        await page.get_by_role("button", name="Electrónicos").click()
+        # Go to Television y video
 
-        # await page.locator('a[href="/gp/browse.html?node=9687925011&ref_=nav_em__tv_and_video_0_2_10_2"]').first.click()
-        # # Go to mas de 55"
-        # await page.get_by_role("link", name="Más de 55\"").click()
+        await page.locator('a[href="/gp/browse.html?node=9687925011&ref_=nav_em__tv_and_video_0_2_10_2"]').first.click()
+        # Go to mas de 55"
+        await page.get_by_role("link", name="Más de 55\"").click()
 
-        # # Boton del primer anuncio
-        # button_tv = "#a-autoid-1-announce"
+        # Boton del primer anuncio
+        button_tv = "#a-autoid-1-announce"
 
-        # # Obtener el texto que aparece dentro del botón
-        # boton_texto = await page.locator(button_tv).text_content()
-        # # Verify if ver opciones button doesn not appear
-        # if "Ver opciones" in boton_texto:
-        #     # Damos click en agregar al carrito
-        #     await page.locator("#a-autoid-1-announce").click()
-        #     # Damos click en agregar al carrito
-        #     await page.locator("#add-to-cart-button").click()
-        #     # procedemos al pago 
-        #     await page.locator("#sc-buy-box-ptc-button").click()
-        # else:
-        #     # Solo damos click en agregar al carrito desde la pestaña
-        #     await page.locator("#a-autoid-1-announce").click()
+        # Obtener el texto que aparece dentro del botón
+        boton_texto = await page.locator(button_tv).text_content()
+        # Verify if ver opciones button doesn not appear
+        if "Ver opciones" in boton_texto:
+            # Damos click en agregar al carrito
+            await page.locator("#a-autoid-1-announce").click()
+            # Damos click en agregar al carrito
+            await page.locator("#add-to-cart-button").click()
+            # procedemos al pago 
+            await page.locator("#sc-buy-box-ptc-button").click()
+        else:
+            # Solo damos click en agregar al carrito desde la pestaña
+            await page.locator("#a-autoid-1-announce").click()
 
-        #     # Ir al carrito
-        #     await page.locator("#nav-cart").click()
+            # Ir al carrito
+            await page.locator("#nav-cart").click()
 
-        #     # Proceder al pago
-        #     await page.locator("#sc-buy-box-ptc-button").click()
+            # Proceder al pago
+            await page.locator("#sc-buy-box-ptc-button").click()
 
         await browser.close()
         
