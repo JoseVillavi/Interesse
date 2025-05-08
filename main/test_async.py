@@ -44,14 +44,11 @@ async def run():
         # Boton del primer anuncio
         button_tv = "#a-autoid-1-announce"
 
-        element = await page.locator('#shipping-address-selection-panel-card-id')
-
-        if (await element.isVisible()):
-            print('El panel de dirección está visible en pantalla')
+        if page.locator("#shipping-address-selection-panel-card-id").is_visible():
+            print("El panel de dirección está visible")
         else:
-            print('El panel no está visible')
+            print("El panel no está visible")
         
-
         # Obtener el texto que aparece dentro del botón
         boton_texto = await page.locator(button_tv).text_content()
         # Verify if ver opciones button doesn not appear
@@ -76,10 +73,10 @@ async def run():
 
             print("El pago se realizó")
 
-        if (await element.isVisible()):
-            print('El panel de dirección está visible en pantalla')
+        if page.locator("#shipping-address-selection-panel-card-id").is_visible():
+            print("El panel de dirección está visible")
         else:
-            print('El panel no está visible')
+            print("El panel no está visible")
         
         await browser.close()
         
