@@ -4,7 +4,7 @@ import requests
 
 async def run():
     async with async_playwright() as p:
-        browser = await p.firefox.launch(headless=False, args=["--start-maximized"])
+        browser = await p.chromium.launch(headless=False, args=["--start-maximized"])
         context = await browser.new_context(no_viewport=True)  # Muy importante para que respete la resolución completa
         page = await context.new_page()
         # Go to amazon
@@ -44,6 +44,14 @@ async def run():
         # Boton del primer anuncio
         button_tv = "#a-autoid-1-announce"
 
+        element = await page.locator('#shipping-address-selection-panel-card-id')
+
+        if (await element.isVisible()):
+            print('El panel de dirección está visible en pantalla')
+        else:
+            print('El panel no está visible')
+        
+
         # Obtener el texto que aparece dentro del botón
         boton_texto = await page.locator(button_tv).text_content()
         # Verify if ver opciones button doesn not appear
@@ -54,6 +62,8 @@ async def run():
             await page.locator("#add-to-cart-button").click()
             # procedemos al pago 
             await page.locator("#sc-buy-box-ptc-button").click()
+
+            print("El pago se realizó")
         else:
             # Solo damos click en agregar al carrito desde la pestaña
             await page.locator("#a-autoid-1-announce").click()
@@ -64,6 +74,13 @@ async def run():
             # Proceder al pago
             await page.locator("#sc-buy-box-ptc-button").click()
 
+            print("El pago se realizó")
+
+        if (await element.isVisible()):
+            print('El panel de dirección está visible en pantalla')
+        else:
+            print('El panel no está visible')
+        
         await browser.close()
         
 
