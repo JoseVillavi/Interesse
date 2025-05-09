@@ -72,11 +72,6 @@ async def run():
             await page.locator("#sc-buy-box-ptc-button").click()
 
             print("El pago se realizó")
-
-        if page.locator("#shipping-address-selection-panel-card-id").is_visible():
-            print("El panel de dirección está visible")
-        else:
-            print("El panel no está visible")
         
         await browser.close()
         
