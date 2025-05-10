@@ -33,13 +33,15 @@ async def run():
         
         # Click on TODO navbar
         await page.click(AmazonLocators.Todo_menu)
-        # Go to Electronicos
-        await page.get_by_role("button", name="Electrónicos").click()
-        # Go to Television y video
 
+        # Go to Electronicos
+        await page.locator(AmazonLocators.Menu_electronicos).click()
+        
+        # Go to Television y video
         await page.locator(AmazonLocators.Tv_video).first.click()
+
         # Go to mas de 55"
-        await page.get_by_role("link", name="Más de 55\"").click()
+        await page.click(AmazonLocators.Tv_55)
 
         # Boton del primer anuncio
         button_tv = "#a-autoid-1-announce"

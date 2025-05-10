@@ -10,9 +10,9 @@ class AmazonLocators:
     Contraseña_campo: str = '#ap_password'
     Boton_enviar_cuenta: str = '#signInSubmit'
     Todo_menu : str = "#nav-hamburger-menu"
-    Menu_electronicos: str = "Electrónicos"
+    Menu_electronicos: str = 'a.hmenu-item[role="button"]:has(div:text("Electrónicos"))'
     Tv_video: str = 'a[href="/gp/browse.html?node=9687925011&ref_=nav_em__tv_and_video_0_2_10_2"]'
-    Tv_55: str = 'text=Más de 55"'
+    Tv_55: str = '#a-autoid-5-announce'
     Boton_primer_articulo: str = '#a-autoid-1-announce'
     Agregar_al_carrito: str = '#add-to-cart-button'
     Ir_al_carrito : str ='#nav-cart'
