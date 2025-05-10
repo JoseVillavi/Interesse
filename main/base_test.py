@@ -36,6 +36,7 @@ async def iniciar_sesion_amazon(page):
 
     print("Inicio de sesión finalizado")
 
+
 async def ir_a_TV_55(page):
 
     print("Rutina ir a TV 55 pulgadas iniciada...")
@@ -53,8 +54,7 @@ async def ir_a_TV_55(page):
     await page.locator(AmazonLocators.Tv_55).click()
 
     print("Rutina ir a TV 55 pulgadas finalizada")
-
-    
+   
 
 async def agregar_primer_item(page):
 
@@ -77,6 +77,7 @@ async def agregar_primer_item(page):
         await page.locator(AmazonLocators.Boton_primer_articulo).click()
     
     print("Rutina ir a TV 55 pulgadas finalizada")
+
 
 async def finalizar_compra(page):
 
