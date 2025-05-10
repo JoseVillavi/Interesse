@@ -2,6 +2,7 @@ import asyncio
 from playwright.async_api import async_playwright
 import requests
 from locators import AmazonLocators
+
 async def run():
     async with async_playwright() as p:
         browser = await p.firefox.launch(headless=False, args=["--start-maximized"])
