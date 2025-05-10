@@ -1,7 +1,7 @@
 import asyncio 
 from playwright.async_api import async_playwright
 import requests
-from locators import AmazonLocators
+from main.locators import AmazonLocators
 
 async def run():
     async with async_playwright() as p:
