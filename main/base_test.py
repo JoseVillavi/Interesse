@@ -57,7 +57,7 @@ async def ir_a_TV_55(page):
     await page.locator(AmazonLocators.Menu_electronicos).first.click()
         
     # Television y video menu
-    await page.locator(AmazonLocators.Tv_video).first.click()
+    await page.locator(AmazonLocators.Tv_video).nth(1).click()
 
     # Selecciona 55 pulgadas
     await page.locator(AmazonLocators.Tv_55).click()

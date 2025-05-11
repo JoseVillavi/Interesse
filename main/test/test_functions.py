@@ -6,7 +6,7 @@ from main.base_test import *
 
 async def test():
     async with async_playwright() as p:
-        browser = await p.firefox.launch(headless=False, args=["--start-maximized"])
+        browser = await p.chromium.launch(headless=True, args=["--start-maximized"])
         context = await browser.new_context(no_viewport=True)  # Muy importante para que respete la resolución completa
         page = await context.new_page()
 
