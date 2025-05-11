@@ -41,11 +41,20 @@ async def ir_a_TV_55(page):
 
     print("Rutina ir a TV 55 pulgadas iniciada...")
 
-    # Click en TODO navbar
+    # Obtiene las coordenadas del menu TODO
+    box = await page.locator(AmazonLocators.Todo_menu).bounding_box()
+
+    # Mueve el mouse al centro del botón
+    await page.mouse.move(box["x"] + box["width"]/2, box["y"] + box["height"]/2)
+
+    # Espera un poco como si fuera un usuario real
+    await page.wait_for_timeout(500)
+
+    # Haz clic
     await page.locator(AmazonLocators.Todo_menu).click()
 
     # Click en Electronicos
-    await page.locator(AmazonLocators.Menu_electronicos).click()
+    await page.locator(AmazonLocators.Menu_electronicos).first.click()
         
     # Television y video menu
     await page.locator(AmazonLocators.Tv_video).first.click()

@@ -5,7 +5,7 @@ from main.locators import AmazonLocators
 
 async def run():
     async with async_playwright() as p:
-        browser = await p.firefox.launch(headless=False, args=["--start-maximized"])
+        browser = await p.firefox.launch(headless=True, args=["--start-maximized"])
         context = await browser.new_context(no_viewport=True)  # Muy importante para que respete la resolución completa
         page = await context.new_page()
         # Go to amazon
