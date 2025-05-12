@@ -1,129 +1,156 @@
-import asyncio 
+import asyncio
+import logging 
 from playwright.async_api import async_playwright
+from playwright.async_api import Page, TimeoutError as PlaywrightTimeoutError
 import requests
 from main.locators import AmazonLocators
 from playwright.async_api import expect
 import httpx
 
 async def Login_amazon(page,user,password):
+    try:
 
-    # This is necessary for the chromium headless speed
-    print ("Wait")
-    await page.wait_for_timeout(4000)
+        logging.info("Login started...")
 
-    print("Login started...")
+        # This is necessary for the chromium headless speed
+        await page.wait_for_timeout(4000)
 
-    # Go to Amazon
-    await page.goto(AmazonLocators.AmazonWeb)
+        # Go to Amazon
+        await page.goto(AmazonLocators.AmazonWeb)
 
-    # Click on login
-    await page.locator(AmazonLocators.Account_menu).click()
+        # Click on login
+        await page.locator(AmazonLocators.Account_menu).click()
 
-    # Click on username
-    await page.locator(AmazonLocators.User_space).click()
+        # Click on username
+        await page.locator(AmazonLocators.User_space).click()
+        
+        # Insert username
+        await page.locator(AmazonLocators.User_space).fill(user)
+
+        # Send username
+        await page.locator(AmazonLocators.Send_user).click()
+
+        # Click on password
+        await page.locator(AmazonLocators.Password_space).click()
+
+        # Insert password
+        await page.locator(AmazonLocators.Password_space).fill(password)
+
+        # Send password
+        await page.locator(AmazonLocators.Send_password).click()
+
+        # This is because the login it more faster than the screens
+        await page.wait_for_timeout(4000)
+
+        logging.info("Login ended")
     
-    # Insert username
-    await page.locator(AmazonLocators.User_space).fill(user)
-
-    # Send username
-    await page.locator(AmazonLocators.Send_user).click()
-
-    # Click on password
-    await page.locator(AmazonLocators.Password_space).click()
-
-    # Insert password
-    await page.locator(AmazonLocators.Password_space).fill(password)
-
-    # Send password
-    await page.locator(AmazonLocators.Send_password).click()
-
-    # This is because the login it more faster than the screens
-    print ("Wait")
-    await page.wait_for_timeout(4000)
-
-    print("Login ended")
+    except PlaywrightTimeoutError as e:
+        logging.error(f"Timeout error with the page: {e}")
+    except Exception as e:
+        logging.error(f"We hava an error during the login process: {e}")
 
 
 async def Go_to_tv_55(page):
+    try:
 
-    print('Go to 55" TVs')
+        logging.info('Go to 55" TVs')
 
-    # Get the coordinates of the all menu
-    box = await page.locator(AmazonLocators.All_menu).bounding_box()
-
-    # Mueve el mouse al centro del botón
-    await page.mouse.move(box["x"] + box["width"]/2, box["y"] + box["height"]/2)
-
-    # Wait as a real user
-    await page.wait_for_timeout(500)
-
-    # Click on all menu
-    await page.locator(AmazonLocators.All_menu).click()
-
-    # Click on Electronics menu
-    await page.locator(AmazonLocators.Electronics_menu).first.click()
+        # Added for the speed of chrumium headless
+        await page.wait_for_timeout(4000)
         
-    # Tv and video menu
-    await page.locator(AmazonLocators.Tv_video).first.click()
+        # Get the coordinates of the all menu
+        box = await page.locator(AmazonLocators.All_menu).bounding_box()
 
-    # Select 55" tvs 
-    await page.locator(AmazonLocators.Tv_55).click()
+        # Mueve el mouse al centro del botón
+        await page.mouse.move(box["x"] + box["width"]/2, box["y"] + box["height"]/2)
 
-    print('Rutine of 55" Tvs ended')
+        # Wait as a real user
+        await page.wait_for_timeout(500)
+
+        # Click on all menu
+        await page.locator(AmazonLocators.All_menu).click()
+
+        # Click on Electronics menu
+        await page.locator(AmazonLocators.Electronics_menu).first.click()
+            
+        # Tv and video menu
+        await page.locator(AmazonLocators.Tv_video).first.click()
+
+        # Select 55" tvs 
+        await page.locator(AmazonLocators.Tv_55).click()
+
+        logging.info('Rutine of 55" Tvs ended')
+    
+    except PlaywrightTimeoutError as e:
+        logging.error(f"Timeout error while finishing purchase: {e}")
+    except Exception as e:
+        logging.error(f'An error ocurred when we try to go to the 55" TVs: {e}')
    
 
 async def Add_first_item_to_cart(page):
+    try:
 
-    print("Add the firts item started...")
+        logging.info("Add the firts item started...")
 
-    # Get the text of the first item
-    button_text = await page.locator(AmazonLocators.First_item_button).text_content()
+        # Added for the speed of chrumium headless
+        await page.wait_for_timeout(4000)
 
-    # Verify if the button has 'Add to cart' or 'Options'
-    if "Ver opciones" in button_text:
+        # Get the text of the first item
+        button_text = await page.locator(AmazonLocators.First_item_button).text_content()
 
-        print("Options in first item button")
+        # Verify if the button has 'Add to cart' or 'Options'
+        if "Ver opciones" in button_text:
 
-        # Click on options
-        await page.locator(AmazonLocators.First_item_button).click()
+            logging.info("Options in first item button")
 
-        print ("Wait")
-        await page.wait_for_timeout(2000)
+            # Click on options
+            await page.locator(AmazonLocators.First_item_button).click()
 
-        # Click on add to cart into the item page
-        await page.get_by_role("button", name="Agregar al Carrito", exact=True).click()
+            # Wait for the load compleated of the page
+            await page.wait_for_timeout(2000)
 
-        if await page.locator(AmazonLocators.No_coverage_button).is_visible():
-            print("Coverage popup visible")
-            # Press no add coverage
-            await page.locator(AmazonLocators.No_coverage_button).click()
+            # Click on add to cart into the item page
+            await page.get_by_role("button", name="Agregar al Carrito", exact=True).click()
 
-    else:
-        print("Add to cart in the firts item button")
-        # Click add to cart
-        await page.locator(AmazonLocators.First_item_button).click()
-    
-    print("First item added to the cart")
+            if await page.locator(AmazonLocators.No_coverage_button).is_visible():
+                logging.info("Coverage popup visible")
+                # Press no add coverage
+                await page.locator(AmazonLocators.No_coverage_button).click()
+
+        else:
+            logging.info("Add to cart in the firts item button")
+            # Click add to cart
+            await page.locator(AmazonLocators.First_item_button).click()
+        
+        logging.info("First item added to the cart")
+
+    except PlaywrightTimeoutError as e:
+        logging.error(f"Timeout error while adding first item to cart: {e}")
+    except Exception as e:
+        logging.error(f"An error occurred while adding the first item to the cart: {e}")
 
 
 async def Finish_purchase(page):
+    try:
 
-    print("Go to pay")
+        logging.info("Go to pay")
 
-    print ("Wait")
-    await page.wait_for_timeout(4000)
+        await page.wait_for_timeout(4000)
 
-    # Go to cart 
-    await page.locator(AmazonLocators.Go_to_cart).click()
+        # Go to cart 
+        await page.locator(AmazonLocators.Go_to_cart).click()
 
-    # Go to pay
-    await page.locator(AmazonLocators.Go_to_pay).click()
-
-    print("purchase completed")
+        # Go to pay
+        await page.locator(AmazonLocators.Go_to_pay).click()
+    
+    except PlaywrightTimeoutError as e:
+        logging.error(f"Timeout error while finishing purchase: {e}")
+    except Exception as e:
+        logging.error(f"An error occurred while finishing the purchase: {e}")
 
 
 async def Start_API(headless, user, pas):
-    print("Send the information to the API")
+    logging.info("Send the information to the API")
 
     # URL of the Endpoint
     url = "http://localhost:8000/login"
@@ -134,10 +161,20 @@ async def Start_API(headless, user, pas):
         "username": user,
         "password": pas
     }
-    response = requests.post(url,json=data)
-
-    # Verify the status of the request and return the data
-    async with httpx.AsyncClient() as client:
-        response = await client.post(url, json=data)
-        response.raise_for_status()
+    try:
+        # Use httpx for async request
+        async with httpx.AsyncClient() as client:
+            response = await client.post(url, json=data)
+            
+            # Check for request status
+            response.raise_for_status()
+        
+        logging.info("Request successfully sent with httpx.")
         return response.json()
+
+    except httpx.RequestError as e:
+        logging.error(f"An error occurred while sending the HTTP request with httpx: {e}")
+    except httpx.HTTPStatusError as e:
+        logging.error(f"HTTP error occurred with status code {e.response.status_code}: {e}")
+    except Exception as e:
+        logging.error(f"An unexpected error occurred: {e}")
