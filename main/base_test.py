@@ -2,101 +2,126 @@ import asyncio
 from playwright.async_api import async_playwright
 import requests
 from main.locators import AmazonLocators
+from playwright.async_api import expect
+import httpx
 
-async def iniciar_sesion_amazon(page):
+async def Login_amazon(page,user,password):
 
-    print("Inicio de sesión iniciado...")
+    print("Login started...")
 
-    # Ve a amazon
+    # Go to Amazon
     await page.goto(AmazonLocators.AmazonWeb)
 
-    # Click en iniciar sesión
-    await page.locator(AmazonLocators.Cuenta_menu).click()
+    # Click on login
+    await page.locator(AmazonLocators.Account_menu).click()
 
-    # Endpoint
-    response = requests.get("http://localhost:8000/login")
-    assert response.status_code == 200, "La conexión con la API falló"
-    data = response.json()
-    usuario = data["Username"]
-    contrasena = data["Password"]
+    # Click on username
+    await page.locator(AmazonLocators.User_space).click()
+    
+    # Insert username
+    await page.locator(AmazonLocators.User_space).fill(user)
 
-    # Click en username e inserccion
-    await page.locator(AmazonLocators.Usuario_campo).click()
-    await page.locator(AmazonLocators.Usuario_campo).fill(usuario)
+    # Send username
+    await page.locator(AmazonLocators.Send_user).click()
 
-    # Click en continuar
-    await page.locator(AmazonLocators.Boton_usuario).click()
+    # Click on password
+    await page.locator(AmazonLocators.Password_space).click()
 
-    # Click en password e inserccion
-    await page.locator(AmazonLocators.Contraseña_campo).click()
-    await page.locator(AmazonLocators.Contraseña_campo).fill(contrasena)
+    # Insert password
+    await page.locator(AmazonLocators.Password_space).fill(password)
 
-    # Click para logear
-    await page.locator(AmazonLocators.Boton_enviar_cuenta).click()
+    # Send password
+    await page.locator(AmazonLocators.Send_password).click()
 
-    print("Inicio de sesión finalizado")
+    print ("Wait")
+
+    await page.wait_for_timeout(4000)
+
+    print("Login ended")
 
 
-async def ir_a_TV_55(page):
+async def Go_to_tv_55(page):
 
-    print("Rutina ir a TV 55 pulgadas iniciada...")
+    print('Go to 55" TVs')
 
-    # Obtiene las coordenadas del menu TODO
-    box = await page.locator(AmazonLocators.Todo_menu).bounding_box()
+    # Get the coordinates of the all menu
+    box = await page.locator(AmazonLocators.All_menu).bounding_box()
 
     # Mueve el mouse al centro del botón
     await page.mouse.move(box["x"] + box["width"]/2, box["y"] + box["height"]/2)
 
-    # Espera un poco como si fuera un usuario real
+    # Wait as a real user
     await page.wait_for_timeout(500)
 
-    # Haz clic
-    await page.locator(AmazonLocators.Todo_menu).click()
+    # Click on all menu
+    await page.locator(AmazonLocators.All_menu).click()
 
-    # Click en Electronicos
-    await page.locator(AmazonLocators.Menu_electronicos).first.click()
+    # Click on Electronics menu
+    await page.locator(AmazonLocators.Electronics_menu).first.click()
         
-    # Television y video menu
-    await page.locator(AmazonLocators.Tv_video).nth(1).click()
+    # Tv and video menu
+    await page.locator(AmazonLocators.Tv_video).first.click()
 
-    # Selecciona 55 pulgadas
+    # Select 55" tvs 
     await page.locator(AmazonLocators.Tv_55).click()
 
-    print("Rutina ir a TV 55 pulgadas finalizada")
+    print('Rutine of 55" Tvs ended')
    
 
-async def agregar_primer_item(page):
+async def Add_first_item_to_cart(page):
 
-    print("Rutina agregar el primer item iniciada...")
+    print("Add the firts item started...")
 
-    # Obtener el texto que aparece dentro del botón del primer item
-    boton_texto = await page.locator(AmazonLocators.Boton_primer_articulo).text_content()
+    # Get the text of the first item
+    button_text = await page.locator(AmazonLocators.First_item_button).text_content()
 
-    # Verifica si el botón es 'Ver opciones' o 'Agregar al carrito'
-    if "Ver opciones" in boton_texto:
+    # Verify if the button has 'Add to cart' or 'Options'
+    if "Ver opciones" in button_text:
 
-        # Damos click en 'Ver opciones'
-        await page.locator(AmazonLocators.Boton_primer_articulo).click()
+        print("Options in first item button")
 
-        # Damos click en 'Agregar al carrito'
-        await page.locator(AmazonLocators.Agregar_al_carrito).click()
+        # Click on options
+        await page.locator(AmazonLocators.First_item_button).click()
+
+        # Click on add to cart into the item page
+        await page.get_by_role("button", name="Agregar al Carrito", exact=True).click()
 
     else:
-        # Solo damos click en agregar al carrito desde la pestaña
-        await page.locator(AmazonLocators.Boton_primer_articulo).click()
+        print("Add to cart in the firts item button")
+        # Click add to cart
+        await page.locator(AmazonLocators.First_item_button).click()
     
-    print("Rutina ir a TV 55 pulgadas finalizada")
+    print("First item added to the cart")
 
 
-async def finalizar_compra(page):
+async def Finish_purchase(page):
 
-    print("Finalizando compra...")
+    print("Go to pay")
 
-    # Ir al carrito
-    await page.locator(AmazonLocators.Ir_al_carrito).click()
+    # Go to cart 
+    await page.locator(AmazonLocators.Go_to_cart).click()
 
-    # Proceder al pago
-    await page.locator(AmazonLocators.Proceder_pago).click()
+    # Go to pay
+    await page.locator(AmazonLocators.Go_to_pay).click()
 
-    print("Compra finalizada")
+    print("purchase completed")
 
+async def Start_API(headless, user, pas):
+    print("Send the information to the API")
+
+    # URL of the Endpoint
+    url = "http://localhost:8000/login"
+
+    # Format of the data
+    data ={
+        "headless" : headless,
+        "username": user,
+        "password": pas
+    }
+    response = requests.post(url,json=data)
+
+    # Verify the status of the request and return the data
+    async with httpx.AsyncClient() as client:
+        response = await client.post(url, json=data)
+        response.raise_for_status()
+        return response.json()

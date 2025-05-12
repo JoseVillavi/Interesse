@@ -2,75 +2,30 @@ import asyncio
 from playwright.async_api import async_playwright
 import requests
 from main.locators import AmazonLocators
+from main.base_test import *
 
-async def run():
+async def test():
     async with async_playwright() as p:
-        browser = await p.firefox.launch(headless=True, args=["--start-maximized"])
-        context = await browser.new_context(no_viewport=True)  # Muy importante para que respete la resolución completa
+        # Send the data of head mode, user and password to the endpoint
+        login = await Start_API(headless=True, user="villavicenciojosfer@gmail.com",pas="fernandotest123")
+
+        # Set the page settings
+        browser = await p.firefox.launch(headless=login.get("headless"), args=["--start-maximized"])
+        context = await browser.new_context(no_viewport=True)
         page = await context.new_page()
-        # Go to amazon
-        await page.goto(AmazonLocators.AmazonWeb)
 
-        # Iniciar sesión
-        await page.click(AmazonLocators.Cuenta_menu)
+        # Calling the login function
+        await Login_amazon(page,user=login.get("username"),password=login.get("password"))
 
-        # API
-        response = requests.get("http://localhost:8000/login")
+        # Calling the function that go to the 55" menu
+        await Go_to_tv_55(page)
 
-        assert response.status_code == 200, "La conexión con la API falló"
+        # Function to add the first item
+        await Add_first_item_to_cart(page)
 
-        data = response.json()
-        usuario = data["Username"]
-        contrasena = data["Password"]
+        # Funtion to finish the purchase
+        await Finish_purchase(page)
 
-        # Login function
-        await page.click(AmazonLocators.Usuario_campo)
-        await page.fill(AmazonLocators.Usuario_campo, usuario)
-        await page.click(AmazonLocators.Boton_usuario)
-        await page.click(AmazonLocators.Contraseña_campo)
-        await page.fill(AmazonLocators.Contraseña_campo, contrasena)
-        await page.click(AmazonLocators.Boton_enviar_cuenta)
-        
-        # Click on TODO navbar
-        await page.click(AmazonLocators.Todo_menu)
-
-        # Go to Electronicos
-        await page.locator(AmazonLocators.Menu_electronicos).click()
-        
-        # Go to Television y video
-        await page.locator(AmazonLocators.Tv_video).first.click()
-
-        # Go to mas de 55"
-        await page.click(AmazonLocators.Tv_55)
-
-        # Boton del primer anuncio
-        button_tv = "#a-autoid-1-announce"
-        
-        # Obtener el texto que aparece dentro del botón
-        boton_texto = await page.locator(button_tv).text_content()
-        # Verify if ver opciones button doesn not appear
-        if "Ver opciones" in boton_texto:
-            # Damos click en agregar al carrito
-            await page.locator(AmazonLocators.Boton_primer_articulo).click()
-            # Damos click en agregar al carrito
-            await page.locator(AmazonLocators.Agregar_al_carrito).click()
-            # procedemos al pago 
-            await page.locator(AmazonLocators.Proceder_pago).click()
-
-            print("El pago se realizó")
-        else:
-            # Solo damos click en agregar al carrito desde la pestaña
-            await page.locator(AmazonLocators.Boton_primer_articulo).click()
-
-            # Ir al carrito
-            await page.locator(AmazonLocators.Ir_al_carrito).click()
-
-            # Proceder al pago
-            await page.locator(AmazonLocators.Proceder_pago).click()
-
-            print("El pago se realizó")
-        
+        # Close the browser
         await browser.close()
-        
-
-asyncio.run(run())
+asyncio.run(test())
