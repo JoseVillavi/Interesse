@@ -31,6 +31,8 @@ INTERESSE/
 
 # Installation and setup
 
+First of all, you need Python ≥3.8 because playwright doesn't work with oldes versions
+
 1. Clone the repository
 
 git clone <repository-url>
