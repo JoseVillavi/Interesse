@@ -7,6 +7,10 @@ import httpx
 
 async def Login_amazon(page,user,password):
 
+    # This is necessary for the chromium headless speed
+    print ("Wait")
+    await page.wait_for_timeout(4000)
+
     print("Login started...")
 
     # Go to Amazon
@@ -33,8 +37,8 @@ async def Login_amazon(page,user,password):
     # Send password
     await page.locator(AmazonLocators.Send_password).click()
 
+    # This is because the login it more faster than the screens
     print ("Wait")
-
     await page.wait_for_timeout(4000)
 
     print("Login ended")
@@ -83,8 +87,16 @@ async def Add_first_item_to_cart(page):
         # Click on options
         await page.locator(AmazonLocators.First_item_button).click()
 
+        print ("Wait")
+        await page.wait_for_timeout(2000)
+
         # Click on add to cart into the item page
         await page.get_by_role("button", name="Agregar al Carrito", exact=True).click()
+
+        if await page.locator(AmazonLocators.No_coverage_button).is_visible():
+            print("Coverage popup visible")
+            # Press no add coverage
+            await page.locator(AmazonLocators.No_coverage_button).click()
 
     else:
         print("Add to cart in the firts item button")
@@ -98,6 +110,9 @@ async def Finish_purchase(page):
 
     print("Go to pay")
 
+    print ("Wait")
+    await page.wait_for_timeout(4000)
+
     # Go to cart 
     await page.locator(AmazonLocators.Go_to_cart).click()
 
@@ -105,6 +120,7 @@ async def Finish_purchase(page):
     await page.locator(AmazonLocators.Go_to_pay).click()
 
     print("purchase completed")
+
 
 async def Start_API(headless, user, pas):
     print("Send the information to the API")

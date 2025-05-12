@@ -7,11 +7,17 @@ from main.base_test import *
 async def test():
     async with async_playwright() as p:
         # Send the data of head mode, user and password to the endpoint
-        login = await Start_API(headless=True, user="villavicenciojosfer@gmail.com",pas="fernandotest123")
+        login = await Start_API(headless=False, user="villavicenciojosfer@gmail.com",pas="fernandotest123")
 
         # Set the page settings
-        browser = await p.firefox.launch(headless=login.get("headless"), args=["--start-maximized"])
-        context = await browser.new_context(no_viewport=True)
+        browser = await p.firefox.launch(headless=login.get("headless"))
+        context = await browser.new_context(
+            viewport={"width": 1600, "height": 900},
+            device_scale_factor=1,
+            is_mobile=False,
+            has_touch=False,
+            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+        )
         page = await context.new_page()
 
         # Calling the login function
