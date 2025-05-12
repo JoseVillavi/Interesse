@@ -64,11 +64,11 @@ async def Go_to_tv_55(page):
         # Mueve el mouse al centro del botón
         await page.mouse.move(box["x"] + box["width"]/2, box["y"] + box["height"]/2)
 
-        # Wait as a real user
-        await page.wait_for_timeout(500)
-
         # Click on all menu
         await page.locator(AmazonLocators.All_menu).click()
+
+        # Added for the speed of chrumium headless
+        await page.wait_for_timeout(2000)
 
         # Click on Electronics menu
         await page.locator(AmazonLocators.Electronics_menu).first.click()

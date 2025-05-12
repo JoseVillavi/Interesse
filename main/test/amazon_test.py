@@ -13,7 +13,7 @@ logging.basicConfig(
 async def test():
     async with async_playwright() as p:
         # Send the data of head mode, user and password to the endpoint
-        login = await Start_API(headless=True, user="villavicenciojosfer@gmail.com",pas="fernandotest123")
+        login = await Start_API(headless=False, user="villavicenciojosfer@gmail.com",pas="fernandotest123")
 
         # Set the page settings
         browser = await p.chromium.launch(headless=login.get("headless"))
