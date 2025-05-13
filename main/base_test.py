@@ -41,7 +41,6 @@ async def Login_amazon(page,user,password):
 
         # This is because the login it more faster than the screens
         await page.wait_for_timeout(4000)
-
         logging.info("Login ended")
     
     except PlaywrightTimeoutError as e:
@@ -54,9 +53,6 @@ async def Go_to_tv_55(page):
     try:
 
         logging.info('Go to 55" TVs')
-
-        # Added for the speed of chrumium headless
-        await page.wait_for_timeout(4000)
         
         # Get the coordinates of the all menu
         box = await page.locator(AmazonLocators.All_menu).bounding_box()
@@ -64,11 +60,14 @@ async def Go_to_tv_55(page):
         # Mueve el mouse al centro del botón
         await page.mouse.move(box["x"] + box["width"]/2, box["y"] + box["height"]/2)
 
+        # Added for the speed of chrumium headless
+        await page.wait_for_timeout(500)
+
         # Click on all menu
         await page.locator(AmazonLocators.All_menu).click()
 
-        # Added for the speed of chrumium headless
-        await page.wait_for_timeout(2000)
+        # This is necessary for the chromium headless speed
+        await page.wait_for_timeout(1000)
 
         # Click on Electronics menu
         await page.locator(AmazonLocators.Electronics_menu).first.click()
@@ -81,8 +80,6 @@ async def Go_to_tv_55(page):
 
         logging.info('Rutine of 55" Tvs ended')
     
-    except PlaywrightTimeoutError as e:
-        logging.error(f"Timeout error while finishing purchase: {e}")
     except Exception as e:
         logging.error(f'An error ocurred when we try to go to the 55" TVs: {e}')
    
